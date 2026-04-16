@@ -1,5 +1,5 @@
 name: "Godot Android Build"
-on: 
+on:
   push:
     branches:
       - master
