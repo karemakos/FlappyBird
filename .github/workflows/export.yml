@@ -1,5 +1,5 @@
 name: "Godot Android Build"
-on:
+on: 
   push:
     branches:
       - master
@@ -12,12 +12,26 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: build
-        uses: firebelley/godot-export@v5.2.1
+      - name: Install Godot
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/3.5.2/Godot_v3.5.2-stable_linux_headless.64.zip
+          unzip Godot_v3.5.2-stable_linux_headless.64.zip
+          mv Godot_v3.5.2-stable_linux_headless.64 /usr/local/bin/godot
+          
+      - name: Install Export Templates
+        run: |
+          wget https://downloads.tuxfamily.org/godotengine/3.5.2/Godot_v3.5.2-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/templates/3.5.2.stable
+          unzip Godot_v3.5.2-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/templates/3.5.2.stable/
+
+      - name: Build Android APK
+        run: |
+          mkdir -p build/android
+          godot --export "Android" build/android/SuperFlappyBird.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
         with:
-          godot_executable_download_url: https://downloads.tuxfamily.org/godotengine/3.5.2/Godot_v3.5.2-stable_linux_headless.64.zip
-          godot_template_download_url: https://downloads.tuxfamily.org/godotengine/3.5.2/Godot_v3.5.2-stable_export_templates.tpz
-          relative_project_path: ./
-          archive_output: true
-        env:
-          RELATIVE_PATH_TO_EXPORT_PRESETS: ./export_presets.cfg
+          name: SuperFlappyBird-APK
+          path: build/android/SuperFlappyBird.apk
