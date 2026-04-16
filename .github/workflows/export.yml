@@ -1,5 +1,8 @@
 name: "Godot Android Build"
-on: [push]
+on: 
+  push:
+    branches:
+      - master  # ده اسم الفرع عندك زي ما باين في الصورة
 
 jobs:
   export_android:
